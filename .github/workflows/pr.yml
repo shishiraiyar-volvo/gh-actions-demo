@@ -1,0 +1,66 @@
+name: PR Tests - Dev
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Automated tests
+        run: |
+          echo "Running tests..."
+          sleep 5
+          echo "Tests completed"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Lint code
+        run: |
+          echo "Running linter..."
+          sleep 3
+          echo "Linting completed"
+
+  security_scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Security scan
+        run: |
+          echo "Running security scan..."
+          sleep 4
+          echo "Security scan completed"
+
+  build:
+    needs: [test, lint, security_scan]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Build project
+        run: |
+          echo "Building project..."
+          sleep 5
+          echo "Build completed"
+
+

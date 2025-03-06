@@ -1,0 +1,49 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+      
+      - name: Build project
+        run: |
+          echo "Building project..."
+          sleep 5
+          echo "Build completed"
+
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      ENVIRONMENT: ${{ github.ref_name }}  # GitHub Actions way of setting env variables dynamically
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Prepare Deployment Files
+        run: |
+          mkdir -p $ENVIRONMENT
+          cp index.html $ENVIRONMENT/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./${{ env.ENVIRONMENT }}
+          destination_dir: ${{ env.ENVIRONMENT }}
+          keep_files: true
